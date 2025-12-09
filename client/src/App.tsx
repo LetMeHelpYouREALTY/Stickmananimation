@@ -8,6 +8,7 @@ import PerformanceDemo from "./pages/PerformanceDemo";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { PerformanceDashboard } from "./components/PerformanceDashboard";
+import LeadCaptureCta from "./components/ui/lead-capture-cta";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function App() {
         </main>
         <Footer />
       </div>
+      <LeadCaptureCta />
       <Toaster />
       <PerformanceDashboard />
     </QueryClientProvider>
