@@ -45,7 +45,13 @@ export default function Footer() {
             <div className="col-span-2 md:col-span-1">
               <h4 className="font-semibold text-white mb-4">Connect</h4>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+                <a
+                  href="https://www.youtube.com/@genekellyboyle"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GK Animates on YouTube"
+                  className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
+                >
                   <FaYoutube />
                 </a>
                 <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
