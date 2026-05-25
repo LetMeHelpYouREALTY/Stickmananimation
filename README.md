@@ -1,74 +1,80 @@
 # GK Animates Website
 
-A professional animation portfolio website for GK Animates, showcasing the "Stickman Epic Legends" series and creative process through YouTube integration and interactive animation examples.
+Animation portfolio for **gkanimates by Gene Kelly Boyle** — built with **Next.js 15** (App Router), React, Tailwind CSS, and YouTube Data API v3.
 
 ## Features
 
-- Animation Showcase: Featured animations with interactive video player
-- Channel Integration: Direct integration with YouTube channel content
-- Creative Process Insights: Detailed breakdown of animation techniques
-- Responsive Design: Fully responsive design for all devices
-- Dynamic Content: Real-time content updates via YouTube API
-- Newsletter Subscription: Fan engagement through newsletter signups
-- Dark/Light Mode: Theme toggle for user preference
-- Interactive Elements: Engaging animations and interactive UI components
+- YouTube channel integration (showreel, featured grid, categories)
+- Newsletter signup (Postgres + Drizzle)
+- Dark/light theme, Framer Motion sections
+- Core Web Vitals monitoring (`/performance`)
+- Deploy-ready for Vercel
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm (v7 or higher)
-- PostgreSQL database
-- YouTube API Key
+- Node.js 18+
+- PostgreSQL (e.g. Neon)
+- YouTube Data API v3 key
 
-### Installation
+### Setup
 
-1. Clone the repository
-2. Install dependencies
-3. Create a .env file with database and YouTube API key
-4. Initialize the database
-5. Start the development server
-6. Visit http://localhost:5000 in your browser
+```bash
+npm install
+cp .env.example .env.local
+# Set DATABASE_URL and YOUTUBE_API_KEY
+npm run db:push
+npm run dev
+```
 
-## Tech Stack
+Open [http://localhost:3000](http://localhost:3000).
 
-- Frontend: React, TypeScript, Tailwind CSS, Framer Motion
-- Backend: Express, Node.js
-- Database: PostgreSQL, Drizzle ORM
-- API Integration: YouTube Data API
-- State Management: React Query, React Context
-- Form Handling: React Hook Form, Zod validation
-- UI Components: Radix UI, Shadcn UI
+### Environment variables
 
-## Documentation
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | Postgres connection string |
+| `YOUTUBE_API_KEY` | Yes | YouTube Data API v3 key |
+| `SYNC_VIDEOS` | No | Set `true` to sync channel on `/api/videos/all` |
+| `SYNC_SECRET` | No | Bearer token for `POST /api/sync` |
 
-- Setup Guide (SETUP.md) - Detailed setup instructions
-- Architecture (docs/ARCHITECTURE.md) - System architecture and design decisions
-- Contributing Guidelines (CONTRIBUTING.md) - How to contribute to the project
-- Deployment Guide (docs/DEPLOYMENT.md) - Guide for deploying to Vercel
+## Scripts
 
-## Deployment
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run db:push` | Push Drizzle schema to database |
 
-### Deploying to Vercel
+## Project structure
 
-The project is configured for easy deployment on Vercel:
+```
+src/
+  app/          # App Router (pages, API routes)
+  components/   # UI and home sections
+  views/        # Page content (Home, Performance)
+  lib/server/   # Database, YouTube sync
+shared/         # Drizzle schema
+public/         # Static assets
+```
 
-1. Connect your GitHub repository to Vercel
-2. Set the required environment variables:
-   - `DATABASE_URL` - PostgreSQL connection string
-   - `YOUTUBE_API_KEY` - YouTube Data API key
-3. Deploy your application
-4. Initialize the database schema using the Drizzle CLI
+## API routes
 
-For detailed instructions, see the [Deployment Guide](docs/DEPLOYMENT.md).
+- `GET /api/videos/showreel` — Latest showreel video ID
+- `GET /api/videos/featured` — Top featured videos
+- `GET /api/videos/all` — All videos
+- `GET /api/videos/category/[category]` — Filter by category
+- `POST /api/newsletter/subscribe` — Newsletter signup
+- `POST /api/sync` — Trigger YouTube sync (optional `SYNC_SECRET`)
 
-## Links
+## Deploy (Vercel)
 
-- YouTube Channel: https://www.youtube.com/@genekellyboyle
-- Live Website: Coming soon
+1. Import the repo on Vercel (framework: Next.js).
+2. Add `DATABASE_URL`, `YOUTUBE_API_KEY`, and optionally `SYNC_VIDEOS=true`.
+3. Run `npm run db:push` against your production database once.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
+MIT
