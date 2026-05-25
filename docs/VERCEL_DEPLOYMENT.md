@@ -47,18 +47,19 @@ You need to set the following environment variables in your Vercel project:
 
 1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket).
 2. Connect your repository to Vercel.
-3. Configure the project:
+3. Configure the project (critical):
    - **Framework Preset:** Next.js
-   - **Build Command:** `npm run build` (default)
-   - **Output Directory:** `dist` **or** leave empty — `next.config.ts` sets `distDir: "dist"` on Vercel automatically
-   - **Production Branch:** ensure this matches your deploy branch (e.g. `cursor/nextjs-starter-migration-22c8` or `main` after merge)
+   - **Build Command:** `npm run build` (default — must run `next build`)
+   - **Output Directory:** leave **empty** (delete `dist` if it is still set from the old Vite app)
+   - **Production Branch:** `cursor/nextjs-starter-migration-22c8` or `main` after merge
 4. Add the required environment variables (`DATABASE_URL`, `YOUTUBE_API_KEY`).
-5. Deploy the project (use **Redeploy** → clear build cache if a previous deploy failed).
+5. Deploy with **Redeploy** and **clear build cache**.
+
+> If you see `.next was not found`, Output Directory is wrong or `distDir` was customized — use default `.next` only.
 
 ## Configuration Files
 
-- `vercel.json`: Next.js framework and security headers
-- `next.config.ts`: uses `distDir: "dist"` when `VERCEL=1` for legacy output-directory settings
+- `vercel.json`: Next.js framework and security headers (no `outputDirectory`)
 
 ## Database Migrations
 
