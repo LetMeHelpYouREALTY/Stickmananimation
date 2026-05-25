@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
+import { prepareStorage } from '@/lib/server/runtime';
 import { storage } from '@/lib/server/storage';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
   try {
+    await prepareStorage();
     const { id: idParam } = await context.params;
     const id = parseInt(idParam, 10);
 

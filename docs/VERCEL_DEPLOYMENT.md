@@ -48,19 +48,18 @@ You need to set the following environment variables in your Vercel project:
 1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket).
 2. Connect your repository to Vercel.
 3. Configure the project:
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Framework Preset: Other
-4. Add the required environment variables.
+   - **Framework Preset:** Next.js
+   - **Build Command:** `npm run vercel-build` (or leave default; `vercel.json` sets this)
+   - **Output Directory:** leave **empty** (do not use `dist` from the old Vite app)
+4. Add the required environment variables (`DATABASE_URL`, `YOUTUBE_API_KEY`).
 5. Deploy the project.
+
+> **Note:** If the Vercel dashboard still has Output Directory set to `dist`, either clear it or keep using `npm run vercel-build`, which copies `.next` → `dist` after `next build`.
 
 ## Configuration Files
 
-The project includes several configuration files specifically for Vercel deployment:
-
-- `vercel.json`: Configures the build settings and routing
-- `vercel-entry.js`: Provides a compatible entry point for serverless functions
-- `api/index.js`: Routes API requests to the main server
+- `vercel.json`: Next.js framework, headers, and `vercel-build` command
+- `scripts/vercel-postbuild.mjs`: Copies `.next` to `dist` when the project output directory is still `dist`
 
 ## Database Migrations
 

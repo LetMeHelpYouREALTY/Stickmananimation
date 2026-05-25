@@ -1,5 +1,5 @@
 import { users, subscribers, videos, type User, type InsertUser, type Subscriber, type InsertSubscriber, type Video, type InsertVideo } from "@shared/schema";
-import { db } from "./db";
+import { getDb } from "./db";
 import { eq, desc } from "drizzle-orm";
 
 // Interface for the storage methods
@@ -29,28 +29,28 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id));
+    const result = await getDb().select().from(users).where(eq(users.id, id));
     return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username));
+    const result = await getDb().select().from(users).where(eq(users.username, username));
     return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(insertUser).returning();
+    const result = await getDb().insert(users).values(insertUser).returning();
     return result[0];
   }
   
   // Newsletter Subscriber methods
   async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
-    const result = await db.select().from(subscribers).where(eq(subscribers.email, email));
+    const result = await getDb().select().from(subscribers).where(eq(subscribers.email, email));
     return result[0];
   }
   
   async createSubscriber(insertSubscriber: InsertSubscriber): Promise<Subscriber> {
-    const result = await db.insert(subscribers).values({
+    const result = await getDb().insert(subscribers).values({
       ...insertSubscriber,
       createdAt: new Date()
     }).returning();
@@ -58,13 +58,13 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getAllSubscribers(): Promise<Subscriber[]> {
-    return await db.select().from(subscribers).orderBy(desc(subscribers.createdAt));
+    return await getDb().select().from(subscribers).orderBy(desc(subscribers.createdAt));
   }
   
   // YouTube Video methods
   async getShowreel(): Promise<Video | undefined> {
     // Always return the latest video as showreel
-    const latestVideo = await db.select()
+    const latestVideo = await getDb().select()
       .from(videos)
       .orderBy(desc(videos.publishedAt))
       .limit(1);
@@ -74,7 +74,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Fallback to any video if no videos exist
-    const anyResult = await db.select().from(videos).limit(1);
+    const anyResult = await getDb().select().from(videos).limit(1);
     return anyResult[0];
   }
   
@@ -83,7 +83,7 @@ export class DatabaseStorage implements IStorage {
     const longestVideo = await this.getLongestVideo();
     
     // Get all videos and sort by view count
-    const allVideos = await db.select()
+    const allVideos = await getDb().select()
       .from(videos)
       .orderBy(desc(videos.viewCount));
     
@@ -100,7 +100,7 @@ export class DatabaseStorage implements IStorage {
       const shouldBeFeature = topVideos.some(tv => tv.id === video.id);
       
       if (shouldBeFeature !== video.featured) {
-        await db.update(videos)
+        await getDb().update(videos)
           .set({ featured: shouldBeFeature })
           .where(eq(videos.id, video.id));
       }
@@ -108,7 +108,7 @@ export class DatabaseStorage implements IStorage {
     
     // If we have a longest video, ensure it's not in featured list
     if (longestVideo) {
-      await db.update(videos)
+      await getDb().update(videos)
         .set({ featured: false })
         .where(eq(videos.id, longestVideo.id));
     }
@@ -118,7 +118,7 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getAllVideos(): Promise<Video[]> {
-    return await db.select()
+    return await getDb().select()
       .from(videos)
       .orderBy(desc(videos.publishedAt));
   }
@@ -128,19 +128,19 @@ export class DatabaseStorage implements IStorage {
       return this.getAllVideos();
     }
     
-    return await db.select()
+    return await getDb().select()
       .from(videos)
       .where(eq(videos.category, category))
       .orderBy(desc(videos.publishedAt));
   }
   
   async getVideoById(id: number): Promise<Video | undefined> {
-    const result = await db.select().from(videos).where(eq(videos.id, id));
+    const result = await getDb().select().from(videos).where(eq(videos.id, id));
     return result[0];
   }
   
   async getVideoByYouTubeId(videoId: string): Promise<Video | undefined> {
-    const result = await db.select().from(videos).where(eq(videos.videoId, videoId));
+    const result = await getDb().select().from(videos).where(eq(videos.videoId, videoId));
     return result[0];
   }
   
@@ -181,12 +181,12 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createVideo(insertVideo: InsertVideo): Promise<Video> {
-    const result = await db.insert(videos).values(insertVideo).returning();
+    const result = await getDb().insert(videos).values(insertVideo).returning();
     return result[0];
   }
   
   async updateVideo(id: number, videoUpdate: Partial<InsertVideo>): Promise<Video | undefined> {
-    const result = await db.update(videos)
+    const result = await getDb().update(videos)
       .set(videoUpdate)
       .where(eq(videos.id, id))
       .returning();
@@ -197,7 +197,7 @@ export class DatabaseStorage implements IStorage {
   // Helper method to initialize the database with sample videos if needed
   async initializeSampleVideos(): Promise<void> {
     // Check if we already have videos
-    const existingVideos = await db.select().from(videos);
+    const existingVideos = await getDb().select().from(videos);
     if (existingVideos.length > 0) {
       console.log("Database already contains videos, skipping initialization");
       return;
@@ -334,14 +334,26 @@ export class DatabaseStorage implements IStorage {
     ];
     
     // Insert all sample videos
-    await db.insert(videos).values(sampleVideos);
+    await getDb().insert(videos).values(sampleVideos);
   }
 }
 
 // Create and export the storage instance
 export const storage = new DatabaseStorage();
 
-// Initialize sample data if needed
-storage.initializeSampleVideos().catch(err => {
-  console.error("Error initializing sample videos:", err);
-});
+let initPromise: Promise<void> | null = null;
+
+/** Seed sample videos once at runtime when DATABASE_URL is available. */
+export function ensureStorageReady(): Promise<void> {
+  if (!process.env.DATABASE_URL) {
+    return Promise.resolve();
+  }
+  if (!initPromise) {
+    initPromise = storage.initializeSampleVideos().catch((err) => {
+      initPromise = null;
+      console.error("Error initializing sample videos:", err);
+      throw err;
+    });
+  }
+  return initPromise;
+}

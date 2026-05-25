@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
+import { prepareStorage } from '@/lib/server/runtime';
 import { storage } from '@/lib/server/storage';
 
 export async function GET() {
   try {
+    await prepareStorage();
     const longestVideo = await storage.getLongestVideo();
     if (!longestVideo) {
       return NextResponse.json({ message: 'No videos found' }, { status: 404 });

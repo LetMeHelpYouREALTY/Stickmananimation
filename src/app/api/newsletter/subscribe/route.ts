@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { insertSubscriberSchema } from '@shared/schema';
 import { fromZodError } from 'zod-validation-error';
 import { z } from 'zod';
+import { prepareStorage } from '@/lib/server/runtime';
 import { storage } from '@/lib/server/storage';
 
 const requestSchema = z
@@ -19,6 +20,7 @@ const requestSchema = z
 
 export async function POST(request: Request) {
   try {
+    await prepareStorage();
     const body = await request.json();
     const transformed = requestSchema.safeParse(body);
 

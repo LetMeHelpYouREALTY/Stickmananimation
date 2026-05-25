@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "next build && node scripts/vercel-postbuild.mjs",
     "start": "next start",
     "lint": "next lint",
     "check": "tsc --noEmit",

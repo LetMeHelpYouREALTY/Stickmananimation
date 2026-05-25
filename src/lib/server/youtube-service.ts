@@ -1,5 +1,5 @@
 import { InsertVideo, type Video } from "@shared/schema";
-import { storage } from "./storage";
+import { ensureStorageReady, storage } from "./storage";
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const API_BASE_URL = "https://www.googleapis.com/youtube/v3";
@@ -200,6 +200,8 @@ export async function fetchAllChannelVideos() {
 // Fetch and save videos to our database
 export async function syncYouTubeVideos(): Promise<void> {
   try {
+    await ensureStorageReady();
+
     // Check if API key exists
     if (!YOUTUBE_API_KEY) {
       console.error("YOUTUBE_API_KEY environment variable is not set");
