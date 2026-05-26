@@ -60,6 +60,17 @@ function formatDuration(isoDuration: string): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
+function parseDurationSeconds(isoDuration: string): number {
+  const match = isoDuration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+
+  const hours = parseInt(match[1] || "0");
+  const minutes = parseInt(match[2] || "0");
+  const seconds = parseInt(match[3] || "0");
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
 // Fetch video categories to map category IDs to names
 async function fetchVideoCategories(): Promise<Map<string, string>> {
   const categoryMap = new Map<string, string>();
@@ -261,6 +272,7 @@ export async function syncYouTubeVideos(): Promise<void> {
           
           // Format the duration
           const duration = formatDuration(contentDetails.duration);
+          const durationSeconds = parseDurationSeconds(contentDetails.duration);
           
           // Create a video object to store in our database
           const videoToInsert: InsertVideo = {
@@ -270,6 +282,7 @@ export async function syncYouTubeVideos(): Promise<void> {
             thumbnailUrl,
             category,
             duration,
+            durationSeconds,
             viewCount: parseInt(statistics.viewCount) || 0,
             publishedAt: new Date(snippet.publishedAt),
             featured: false, // Default to not featured

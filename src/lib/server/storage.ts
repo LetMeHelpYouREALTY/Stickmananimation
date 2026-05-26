@@ -1,6 +1,6 @@
 import { users, subscribers, videos, type User, type InsertUser, type Subscriber, type InsertSubscriber, type Video, type InsertVideo } from "@shared/schema";
 import { getDb } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, lte, gt } from "drizzle-orm";
 
 // Interface for the storage methods
 export interface IStorage {
@@ -19,6 +19,8 @@ export interface IStorage {
   getFeaturedVideos(): Promise<Video[]>;
   getAllVideos(): Promise<Video[]>;
   getVideosByCategory(category: string): Promise<Video[]>;
+  getShortVideos(): Promise<Video[]>;
+  getLongFormVideos(): Promise<Video[]>;
   getVideoById(id: number): Promise<Video | undefined>;
   getVideoByYouTubeId(videoId: string): Promise<Video | undefined>;
   getLongestVideo(): Promise<Video | undefined>;
@@ -133,6 +135,23 @@ export class DatabaseStorage implements IStorage {
       .where(eq(videos.category, category))
       .orderBy(desc(videos.publishedAt));
   }
+
+  async getShortVideos(): Promise<Video[]> {
+    // YouTube Shorts are typically <= 60 seconds
+    return await getDb()
+      .select()
+      .from(videos)
+      .where(and(gt(videos.durationSeconds, 0), lte(videos.durationSeconds, 60)))
+      .orderBy(desc(videos.publishedAt));
+  }
+
+  async getLongFormVideos(): Promise<Video[]> {
+    return await getDb()
+      .select()
+      .from(videos)
+      .where(gt(videos.durationSeconds, 60))
+      .orderBy(desc(videos.publishedAt));
+  }
   
   async getVideoById(id: number): Promise<Video | undefined> {
     const result = await getDb().select().from(videos).where(eq(videos.id, id));
@@ -214,6 +233,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f",
         category: "Character",
         duration: "3:24",
+        durationSeconds: 204,
         viewCount: 12500,
         featured: true,
         showreel: true,
@@ -226,6 +246,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1",
         category: "Motion Graphics",
         duration: "2:15",
+        durationSeconds: 135,
         viewCount: 35000,
         featured: true,
         showreel: false,
@@ -238,6 +259,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1516035071284-94981165aca1",
         category: "Short Films",
         duration: "4:52",
+        durationSeconds: 292,
         viewCount: 28000,
         featured: true,
         showreel: false,
@@ -250,6 +272,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7",
         category: "Character",
         duration: "1:45",
+        durationSeconds: 105,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-04-05"),
@@ -261,6 +284,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1642957565850-617bc5155673",
         category: "Commercial",
         duration: "0:30",
+        durationSeconds: 30,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-05-12"),
@@ -272,6 +296,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8",
         category: "Experimental",
         duration: "2:12",
+        durationSeconds: 132,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-06-18"),
@@ -283,6 +308,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1620428268482-cf1851a383b0",
         category: "Commercial",
         duration: "1:20",
+        durationSeconds: 80,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-07-23"),
@@ -294,6 +320,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1559028012-481c04fa702d",
         category: "Motion Graphics",
         duration: "3:05",
+        durationSeconds: 185,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-08-14"),
@@ -305,6 +332,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f",
         category: "Character",
         duration: "0:45",
+        durationSeconds: 45,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-09-02"),
@@ -316,6 +344,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1578632767115-351597cf2477",
         category: "Short Films",
         duration: "5:30",
+        durationSeconds: 330,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-10-09"),
@@ -327,6 +356,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1519074069390-98277fc02a5f",
         category: "Experimental",
         duration: "1:35",
+        durationSeconds: 95,
         featured: false,
         showreel: false,
         publishedAt: new Date("2023-11-15"),
