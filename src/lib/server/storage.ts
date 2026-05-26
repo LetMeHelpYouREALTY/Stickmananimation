@@ -382,7 +382,7 @@ export function ensureStorageReady(): Promise<void> {
     initPromise = storage.initializeSampleVideos().catch((err) => {
       initPromise = null;
       console.error("Error initializing sample videos:", err);
-      throw err;
+      // Do not block reads if seed fails (e.g. schema not migrated yet)
     });
   }
   return initPromise;

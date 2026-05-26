@@ -77,10 +77,20 @@ The workflow [`.github/workflows/vercel-production.yml`](../.github/workflows/ve
 The project is configured to work with Drizzle ORM. To update the database schema:
 
 1. Make changes to the schema in `shared/schema.ts`
-2. Run the migration command:
+2. Run the migration command (with `DATABASE_URL` set to your Neon production URL):
    ```bash
    npm run db:push
    ```
+
+If video APIs return **500** after deploy, check Vercel **Runtime Logs** for `[videos] API error`. Common fixes:
+
+| Cause | Fix |
+|-------|-----|
+| `DATABASE_URL` missing | Add Neon connection string in Vercel → Environment Variables (Production + Preview) |
+| `duration_seconds` column missing | Run `npm run db:push` or `migrations/0000_duration_seconds.sql` on the database |
+| Empty database | Set `YOUTUBE_API_KEY`; first request auto-syncs channel videos |
+
+Video routes return **200 with `[]`** when `DATABASE_URL` is unset so the homepage still loads (sections stay empty until the DB is configured).
 
 ## Troubleshooting
 

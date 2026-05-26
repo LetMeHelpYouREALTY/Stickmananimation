@@ -1,14 +1,9 @@
-import { NextResponse } from "next/server";
-import { prepareStorage } from "@/lib/server/runtime";
+import { handleVideoApi } from "@/lib/server/api-videos";
 import { storage } from "@/lib/server/storage";
 
 export async function GET() {
-  try {
-    await prepareStorage();
-    const videos = await storage.getLongFormVideos();
-    return NextResponse.json(videos);
-  } catch {
-    return NextResponse.json({ message: "Failed to fetch videos" }, { status: 500 });
-  }
+  return handleVideoApi(() => storage.getLongFormVideos(), {
+    empty: [],
+    syncIfEmpty: true,
+  });
 }
-
