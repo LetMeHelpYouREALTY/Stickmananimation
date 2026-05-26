@@ -5,7 +5,7 @@
 In Vercel (and `.env.local` for local testing):
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://www.your-live-domain.com
+NEXT_PUBLIC_SITE_URL=https://www.stickmananimations.com
 ```
 
 This powers canonical URLs, `sitemap.xml`, `robots.txt`, and Open Graph links.

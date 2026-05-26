@@ -1,0 +1,27 @@
+# Promote every successful Vercel preview on protected branches to production
+# so stickmananimations.com updates without a manual Promote in the dashboard.
+name: Vercel Production
+
+on:
+  deployment_status:
+
+jobs:
+  promote:
+    if: |
+      github.event.deployment_status.state == 'success' &&
+      (
+        github.event.deployment.ref == 'refs/heads/main' ||
+        github.event.deployment.ref == 'refs/heads/cursor/nextjs-starter-migration-22c8'
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Promote deployment to production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DEPLOYMENT_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Add VERCEL_TOKEN to repository secrets (Vercel → Settings → Tokens)."
+            exit 1
+          fi
+          npx vercel@latest promote "$DEPLOYMENT_URL" --yes --token="$VERCEL_TOKEN"
