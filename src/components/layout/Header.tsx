@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 
 const navLinks = [
   { href: "#home", label: "Home" },
+  { href: "#shorts", label: "Shorts" },
   { href: "#portfolio", label: "Portfolio" },
   { href: "#process", label: "Process" },
   { href: "#about", label: "About" },

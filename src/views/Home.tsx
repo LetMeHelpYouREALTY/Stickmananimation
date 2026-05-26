@@ -2,6 +2,7 @@
 
 import Hero from "../components/home/Hero";
 import FeaturedAnimations from "../components/home/FeaturedAnimations";
+import Shorts from "../components/home/Shorts";
 import Portfolio from "../components/home/Portfolio";
 import CreativeProcess from "../components/home/CreativeProcess";
 import About from "../components/home/About";
@@ -13,6 +14,7 @@ export default function Home() {
     <>
       <Hero />
       <FeaturedAnimations />
+      <Shorts />
       <Portfolio />
       <CreativeProcess />
       <About />
