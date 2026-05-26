@@ -1,5 +1,8 @@
 /** Canonical site config for SEO, Search Console, and JSON-LD. */
 
+/** Production domain for canonical URLs, OG tags, and sitemap (not preview deploy URLs). */
+export const canonicalSiteUrl = "https://www.stickmananimations.com";
+
 export const siteConfig = {
   name: "GK Animates",
   legalName: "GK Animates by Gene Kelly Boyle",
@@ -27,12 +30,24 @@ export const siteConfig = {
   ],
 } as const;
 
+function normalizeSiteUrl(url: string): string {
+  const trimmed = url.replace(/\/$/, "");
+  return trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+}
+
+/**
+ * Canonical origin for metadata, sitemap, and JSON-LD.
+ * Never uses VERCEL_URL — that is a per-deployment hostname (preview URLs break OG/social cards).
+ */
 export function getSiteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+    return normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
   }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return normalizeSiteUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  }
+  if (process.env.VERCEL) {
+    return canonicalSiteUrl;
   }
   return "http://localhost:3000";
 }

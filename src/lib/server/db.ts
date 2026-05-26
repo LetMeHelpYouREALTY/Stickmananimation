@@ -1,18 +1,21 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "@shared/schema";
 
-let client: ReturnType<typeof postgres> | null = null;
 let database: ReturnType<typeof drizzle<typeof schema>> | null = null;
+
+export function isDatabaseConfigured(): boolean {
+  return Boolean(process.env.DATABASE_URL?.trim());
+}
 
 export function getDb() {
   if (!database) {
-    const connectionString = process.env.DATABASE_URL;
+    const connectionString = process.env.DATABASE_URL?.trim();
     if (!connectionString) {
       throw new Error("DATABASE_URL is not configured");
     }
-    client = postgres(connectionString);
-    database = drizzle(client, { schema });
+    const sql = neon(connectionString);
+    database = drizzle(sql, { schema });
   }
   return database;
 }

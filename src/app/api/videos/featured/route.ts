@@ -1,13 +1,9 @@
-import { NextResponse } from 'next/server';
-import { prepareStorage } from '@/lib/server/runtime';
-import { storage } from '@/lib/server/storage';
+import { handleVideoApi } from "@/lib/server/api-videos";
+import { storage } from "@/lib/server/storage";
 
 export async function GET() {
-  try {
-    await prepareStorage();
-    const featuredVideos = await storage.getFeaturedVideos();
-    return NextResponse.json(featuredVideos);
-  } catch {
-    return NextResponse.json({ message: 'Failed to fetch featured videos' }, { status: 500 });
-  }
+  return handleVideoApi(() => storage.getFeaturedVideos(), {
+    empty: [],
+    syncIfEmpty: true,
+  });
 }

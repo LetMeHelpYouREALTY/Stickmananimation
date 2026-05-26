@@ -21,6 +21,7 @@ You need to set the following environment variables in your Vercel project:
 | `VERCEL` | Set to '1' to enable serverless mode | Yes |
 | `SYNC_VIDEOS` | Set to 'true' to sync videos on deployment | Optional |
 | `NODE_ENV` | Set to 'production' | Yes |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.stickmananimations.com` (canonical OG/sitemap; optional if using default) | Recommended |
 
 ## Deployment Steps
 
@@ -55,7 +56,17 @@ You need to set the following environment variables in your Vercel project:
 4. Add the required environment variables (`DATABASE_URL`, `YOUTUBE_API_KEY`).
 5. Deploy with **Redeploy** and **clear build cache**.
 
-> If you see `.next was not found`, Output Directory is wrong or `distDir` was customized — use default `.next` only.
+### Always deploy to production (automated)
+
+The workflow [`.github/workflows/vercel-production.yml`](../.github/workflows/vercel-production.yml) runs on every successful Vercel deployment for `main` or `cursor/nextjs-starter-migration-22c8` and runs `vercel promote` so **stickmananimations.com** updates without clicking Promote in the dashboard.
+
+**One-time setup:** In GitHub → **Settings → Secrets and variables → Actions**, add:
+
+| Secret | Value |
+|--------|--------|
+| `VERCEL_TOKEN` | [Vercel account token](https://vercel.com/account/tokens) with deploy access |
+
+> If you see `.next was not found`, Output Directory is wrong or `distDir` was customized — use default `.next` only. In **Project Settings → Build & Development**, clear **Output Directory** (leave empty for Next.js).
 
 ## Configuration Files
 
@@ -66,10 +77,20 @@ You need to set the following environment variables in your Vercel project:
 The project is configured to work with Drizzle ORM. To update the database schema:
 
 1. Make changes to the schema in `shared/schema.ts`
-2. Run the migration command:
+2. Run the migration command (with `DATABASE_URL` set to your Neon production URL):
    ```bash
    npm run db:push
    ```
+
+If video APIs return **500** after deploy, check Vercel **Runtime Logs** for `[videos] API error`. Common fixes:
+
+| Cause | Fix |
+|-------|-----|
+| `DATABASE_URL` missing | Add Neon connection string in Vercel → Environment Variables (Production + Preview) |
+| `duration_seconds` column missing | Run `npm run db:push` or `migrations/0000_duration_seconds.sql` on the database |
+| Empty database | Set `YOUTUBE_API_KEY`; first request auto-syncs channel videos |
+
+Video routes return **200 with `[]`** when `DATABASE_URL` is unset so the homepage still loads (sections stay empty until the DB is configured).
 
 ## Troubleshooting
 

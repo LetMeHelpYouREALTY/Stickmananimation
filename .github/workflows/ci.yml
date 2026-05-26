@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - cursor/nextjs-starter-migration-22c8
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - cursor/nextjs-starter-migration-22c8
 
 jobs:
   build:
@@ -12,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
     - uses: actions/checkout@v3

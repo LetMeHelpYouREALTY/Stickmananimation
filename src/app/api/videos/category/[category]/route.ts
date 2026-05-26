@@ -1,16 +1,12 @@
-import { NextResponse } from 'next/server';
-import { prepareStorage } from '@/lib/server/runtime';
-import { storage } from '@/lib/server/storage';
+import { handleVideoApi } from "@/lib/server/api-videos";
+import { storage } from "@/lib/server/storage";
 
 type RouteContext = { params: Promise<{ category: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
-  try {
-    await prepareStorage();
-    const { category } = await context.params;
-    const videos = await storage.getVideosByCategory(category);
-    return NextResponse.json(videos);
-  } catch {
-    return NextResponse.json({ message: 'Failed to fetch videos by category' }, { status: 500 });
-  }
+  const { category } = await context.params;
+  return handleVideoApi(() => storage.getVideosByCategory(category), {
+    empty: [],
+    syncIfEmpty: true,
+  });
 }
