@@ -4,7 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedLogo from "../ui/AnimatedLogo";
 import ThemeToggle from "../ui/ThemeToggle";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaYoutube } from "react-icons/fa";
+import { siteConfig } from "@/config/site";
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -48,6 +49,16 @@ export default function Header() {
         </nav>
         
         <div className="flex items-center gap-4">
+          <a
+            href={siteConfig.youtube.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Visit GK Animates on YouTube"
+          >
+            <FaYoutube className="text-red-600" />
+            <span>YouTube</span>
+          </a>
           <ThemeToggle />
           
           <button 
@@ -80,6 +91,16 @@ export default function Header() {
                   {link.label}
                 </a>
               ))}
+              <a
+                href={siteConfig.youtube.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors flex items-center gap-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaYoutube className="text-red-600" />
+                <span>Visit YouTube Channel</span>
+              </a>
             </div>
           </motion.div>
         )}

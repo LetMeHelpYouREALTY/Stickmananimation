@@ -6,6 +6,7 @@ import VideoCard from "../ui/VideoCard";
 import { useQuery } from "@tanstack/react-query";
 import { FaArrowRight } from "react-icons/fa";
 import type { Video } from "@shared/schema";
+import { siteConfig } from "@/config/site";
 
 export default function FeaturedAnimations() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
@@ -109,15 +110,28 @@ export default function FeaturedAnimations() {
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <motion.a
-            href="#portfolio"
-            className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-md shadow-md hover:shadow-lg transition-all"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View Full Portfolio
-            <FaArrowRight className="ml-2" />
-          </motion.a>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <motion.a
+              href="#portfolio"
+              className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-semibold rounded-md shadow-md hover:shadow-lg transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View Full Portfolio
+              <FaArrowRight className="ml-2" />
+            </motion.a>
+            <motion.a
+              href={siteConfig.youtube.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-semibold rounded-md shadow-sm hover:shadow-md transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View on YouTube
+              <FaArrowRight className="ml-2" />
+            </motion.a>
+          </div>
         </motion.div>
       </div>
 

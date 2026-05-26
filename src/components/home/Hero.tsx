@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getLatestShowreel } from "../../lib/youtube";
 import { FaPlay, FaCode, FaFilm, FaAward, FaLaptopCode } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
+import { siteConfig } from "@/config/site";
 
 // Animation variants
 const containerVariants = {
@@ -140,6 +141,18 @@ export default function Hero() {
               initial="hidden"
               animate="visible"
             >
+              <motion.a 
+                href={siteConfig.youtube.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold rounded-md hover:bg-white/20 transition-all"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                variants={itemVariants}
+              >
+                <FaFilm />
+                YouTube Channel
+              </motion.a>
               <motion.a 
                 href="#portfolio" 
                 className="flex items-center gap-2 px-6 py-3 bg-[#00BFA6] text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all"

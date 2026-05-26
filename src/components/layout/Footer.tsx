@@ -1,6 +1,6 @@
 'use client';
 
-import { FaYoutube, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa";
 import AnimatedLogo from "../ui/AnimatedLogo";
 
 export default function Footer() {
@@ -36,9 +36,9 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Copyright</a></li>
+                <li><span className="text-gray-500">Privacy Policy (coming soon)</span></li>
+                <li><span className="text-gray-500">Terms of Service (coming soon)</span></li>
+                <li><span className="text-gray-500">Copyright</span></li>
               </ul>
             </div>
             
@@ -53,15 +53,6 @@ export default function Footer() {
                   className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
                 >
                   <FaYoutube />
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
-                  <FaInstagram />
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
-                  <FaTwitter />
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
-                  <FaLinkedinIn />
                 </a>
               </div>
             </div>

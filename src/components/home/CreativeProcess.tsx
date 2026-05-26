@@ -7,6 +7,7 @@ import { getLongestVideo } from "../../lib/youtube";
 import { getFeaturedVideos } from "../../lib/youtube";
 import { getVideosByCategory } from "../../lib/youtube";
 import { useQuery } from "@tanstack/react-query";
+import { siteConfig } from "@/config/site";
 
 export default function CreativeProcess() {
   const sectionRef = useRef(null);
@@ -123,6 +124,26 @@ export default function CreativeProcess() {
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Discover the world of "Stickman Epic Legends" and more engaging animated content on my YouTube channel
           </p>
+          <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+            <a
+              href={siteConfig.youtube.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+            >
+              <FaYoutube className="text-white" />
+              Visit {siteConfig.youtube.handle}
+            </a>
+            <a
+              href={`https://www.youtube.com/channel/${siteConfig.youtube.channelId}?sub_confirmation=1`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 font-semibold text-gray-900 dark:text-white shadow-sm hover:shadow-md transition-all"
+            >
+              <FaBell className="text-red-600" />
+              Subscribe
+            </a>
+          </div>
         </motion.div>
 
         {/* Channel Stats */}
