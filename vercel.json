@@ -4,18 +4,40 @@
   "framework": "vite",
   "trailingSlash": false,
   "cleanUrls": true,
-  "public": true,
-  "regions": ["all"],
+  "regions": [
+    "all"
+  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/deploy-check", "destination": "/dist/public/deploy-check.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/deploy-check",
+      "destination": "/dist/public/deploy-check.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/dist/public/(.*)", "dest": "/dist/public/$1" },
-    { "src": "/(.*\\.[a-z0-9]+)$", "dest": "/$1" },
-    { "src": "/(.*)", "status": 200, "dest": "/index.html" }
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/dist/public/(.*)",
+      "dest": "/dist/public/$1"
+    },
+    {
+      "src": "/(.*\\.[a-z0-9]+)$",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "status": 200,
+      "dest": "/index.html"
+    }
   ],
   "headers": [
     {
