@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
   "framework": "vite",
   "trailingSlash": false,
   "cleanUrls": true,
@@ -11,7 +11,7 @@
     },
     {
       "source": "/deploy-check",
-      "destination": "/dist/public/deploy-check.html"
+      "destination": "/deploy-check.html"
     },
     {
       "source": "/(.*)",
